@@ -95,10 +95,6 @@ export default function LandingPage() {
                             Go to Chat
                         </button>
                     )}
-                    {/* Help Icon */}
-                    <button className="landing-page-help-button w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-sm">
-                        <span className="text-white text-sm font-medium">?</span>
-                    </button>
                 </div>
             </nav>
 
