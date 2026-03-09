@@ -1,18 +1,15 @@
 'use client';
 
-import { ChevronDown, Plus, Sparkles } from 'lucide-react';
+import { ChevronDown, Sparkles } from 'lucide-react';
 import { useUserContext } from '@/contexts/UserContext';
 import { useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 export default function LandingPage() {
     const { user } = useUserContext();
     const clerk = useClerk();
     const router = useRouter();
-    const [input, setInput] = useState('');
-    const [isInputFocused, setIsInputFocused] = useState(false);
-    
     const handleLogin = useCallback(() => {
         if (user) {
             router.replace('/chat');
@@ -32,20 +29,6 @@ export default function LandingPage() {
     const handleGoToChat = useCallback(() => {
         router.replace('/chat');
     }, [router]);
-
-    const handleSubmit = (e?: React.FormEvent) => {
-        e?.preventDefault();
-        if (input.trim()) {
-            router.push(`/chat?message=${encodeURIComponent(input.trim())}`);
-        }
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSubmit();
-        }
-    };
 
     return (
         <div className="landing-page-container min-h-screen w-full bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#050505] flex flex-col relative overflow-hidden">
@@ -105,7 +88,7 @@ export default function LandingPage() {
                     <div className="landing-page-prompt-badge mb-6 flex justify-center">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
                             <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                            <span className="text-xs sm:text-sm text-white/70 font-medium">AI-Powered Documentation Assistant</span>
+                            <span className="text-xs sm:text-sm text-white/70 font-medium">AI Document & Image Analysis</span>
                         </div>
                     </div>
                     <h1 className="landing-page-prompt-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold text-white text-center leading-[1.1] mb-4 tracking-tight">
@@ -114,76 +97,13 @@ export default function LandingPage() {
                         </span>
                         <br />
                         <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                            for Documentation
+                            for Docs & Images
                         </span>
                     </h1>
                     <p className="landing-page-prompt-subtitle text-lg sm:text-xl md:text-2xl text-white/60 text-center max-w-2xl mx-auto leading-relaxed">
-                        Get instant answers from your knowledge base. Ask questions, find information, and streamline your documentation workflow.
+                        Analyze documents and scan images to extract insights. Ask questions, get instant answers, and streamline your workflow.
                     </p>
                 </div>
-
-                {/* Input Bar */}
-                <form onSubmit={handleSubmit} className="landing-page-input-form w-full max-w-4xl mt-8">
-                    <div className={`landing-page-input-bar relative flex items-center gap-3 sm:gap-4 rounded-2xl px-5 sm:px-6 py-4 sm:py-5 border backdrop-blur-xl ${
-                        isInputFocused 
-                            ? 'bg-white/10 border-white/30 shadow-2xl shadow-blue-500/10' 
-                            : 'bg-white/5 border-white/10 hover:border-white/20 shadow-xl'
-                    }`}>
-                        {/* Plus Icon */}
-                        <button
-                            type="button"
-                            className="landing-page-plus-button flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10"
-                        >
-                            <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-white/80" />
-                        </button>
-
-                        {/* Input Field */}
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            onFocus={() => setIsInputFocused(true)}
-                            onBlur={() => setIsInputFocused(false)}
-                            placeholder="Ask anything about your documentation..."
-                            className="landing-page-input flex-1 bg-transparent text-white placeholder-white/40 text-base sm:text-lg outline-none focus:outline-none font-medium"
-                        />
-
-                        {/* Voice Button */}
-                        {input.trim() && (
-                            <button
-                                type="submit"
-                                className="landing-page-submit-button flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 shadow-lg shadow-blue-500/30"
-                            >
-                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                            </button>
-                        )}
-                        {!input.trim() && (
-                            <button
-                                type="button"
-                                className="landing-page-voice-button flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10"
-                            >
-                                <span className="text-xs sm:text-sm font-medium text-white/70">Voice</span>
-                            </button>
-                        )}
-                    </div>
-                    
-                    {/* Quick Suggestions */}
-                    <div className="landing-page-suggestions mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                        {['Summarize documentation', 'Find specific information', 'Explain concepts', 'Generate examples'].map((suggestion, idx) => (
-                            <button
-                                key={idx}
-                                type="button"
-                                onClick={() => setInput(suggestion)}
-                                className="landing-page-suggestion-button px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white/70 hover:text-white/90 backdrop-blur-sm"
-                            >
-                                {suggestion}
-                            </button>
-                        ))}
-                    </div>
-                </form>
 
                 {/* Features Grid */}
                 <div className="landing-page-features mt-16 sm:mt-20 lg:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-5xl w-full">
