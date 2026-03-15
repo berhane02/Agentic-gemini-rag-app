@@ -96,7 +96,7 @@ export default function LandingPage() {
                             Personal Agent assistant
                         </span>
                         <br />
-                        <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
                             for Docs & Images
                         </span>
                     </h1>
