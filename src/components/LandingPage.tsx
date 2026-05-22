@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Sparkles } from 'lucide-react';
+import { ChevronDown, Sparkles, Zap, Shield, BookOpen } from 'lucide-react';
 import { useUserContext } from '@/contexts/UserContext';
 import { useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
@@ -31,12 +31,16 @@ export default function LandingPage() {
     }, [router]);
 
     return (
-        <div className="landing-page-container min-h-screen w-full bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#050505] flex flex-col relative overflow-hidden">
-            {/* Subtle background pattern */}
-            <div className="landing-page-background-pattern absolute inset-0 opacity-[0.03]" style={{
-                backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-                backgroundSize: '40px 40px'
+        <div className="landing-page-container min-h-screen w-full bg-[#060609] flex flex-col relative overflow-hidden">
+            {/* Grid pattern */}
+            <div className="landing-page-background-pattern absolute inset-0 opacity-[0.04]" style={{
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+                backgroundSize: '64px 64px'
             }}></div>
+            {/* Ambient glow blobs */}
+            <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+            <div className="absolute top-[40%] left-[40%] w-[30vw] h-[30vw] max-w-[400px] max-h-[400px] rounded-full bg-indigo-500/5 blur-[100px] pointer-events-none" />
 
             {/* Top Navigation Bar */}
             <nav className="landing-page-navbar relative z-10 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex items-center justify-between backdrop-blur-sm bg-white/5 border-b border-white/5">
@@ -108,17 +112,37 @@ export default function LandingPage() {
                 {/* Features Grid */}
                 <div className="landing-page-features mt-16 sm:mt-20 lg:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-5xl w-full">
                     {[
-                        { icon: '⚡', title: 'Lightning Fast', desc: 'Instant responses powered by AI' },
-                        { icon: '🔒', title: 'Secure & Private', desc: 'Your data stays protected' },
-                        { icon: '📚', title: 'Knowledge Base', desc: 'Access all your documentation' }
+                        {
+                            Icon: Zap,
+                            gradient: 'from-amber-500 to-orange-500',
+                            glow: 'shadow-amber-500/25',
+                            title: 'Lightning Fast',
+                            desc: 'Instant responses powered by AI'
+                        },
+                        {
+                            Icon: Shield,
+                            gradient: 'from-emerald-500 to-teal-500',
+                            glow: 'shadow-emerald-500/25',
+                            title: 'Secure & Private',
+                            desc: 'Your data stays protected'
+                        },
+                        {
+                            Icon: BookOpen,
+                            gradient: 'from-blue-500 to-indigo-500',
+                            glow: 'shadow-blue-500/25',
+                            title: 'Knowledge Base',
+                            desc: 'Access all your documentation'
+                        }
                     ].map((feature, idx) => (
                         <div
                             key={idx}
-                            className="landing-page-feature-card p-6 sm:p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-white/20"
+                            className="landing-page-feature-card group p-6 sm:p-8 rounded-2xl bg-white/4 border border-white/8 backdrop-blur-sm hover:bg-white/7 hover:border-white/15 transition-all duration-300"
                         >
-                            <div className="landing-page-feature-icon text-3xl sm:text-4xl mb-4">{feature.icon}</div>
+                            <div className={`landing-page-feature-icon inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.glow} mb-5`}>
+                                <feature.Icon className="w-5 h-5 text-white" strokeWidth={2} />
+                            </div>
                             <h3 className="landing-page-feature-title text-lg sm:text-xl font-semibold text-white mb-2">{feature.title}</h3>
-                            <p className="landing-page-feature-desc text-sm sm:text-base text-white/60">{feature.desc}</p>
+                            <p className="landing-page-feature-desc text-sm sm:text-base text-white/50 leading-relaxed">{feature.desc}</p>
                         </div>
                     ))}
                 </div>
