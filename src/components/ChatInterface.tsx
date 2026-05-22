@@ -8,7 +8,7 @@ import ChatInput from './ChatInput';
 import AuthButton from './AuthButton';
 import ConfirmDialog from './ConfirmDialog';
 import ConversationHistory from './ConversationHistory';
-import { User, Trash2, Home, History } from 'lucide-react';
+import { User, Trash2, Home, History, MessageSquare, Lightbulb, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { logger } from '@/lib/logger';
 
@@ -609,31 +609,42 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                         <div className="chat-messages-wrapper px-4 sm:px-6 md:px-8 lg:px-12 pb-12">
                             {messages.length === 0 ? (
                                 <div className="empty-state-container flex min-h-[60vh] flex-col items-center justify-center text-center pt-16 sm:pt-20">
-                                    <div className="empty-state-avatar mb-8 rounded-full bg-gray-50 p-5 dark:bg-gray-800/50">
+                                    <div className="empty-state-avatar mb-8">
                                         {user?.picture ? (
-                                            <img
-                                                src={user.picture}
-                                                alt={user.name || 'User'}
-                                                className="h-14 w-14 rounded-full object-cover object-center"
-                                                style={{ objectPosition: 'center center' }}
-                                            />
+                                            <div className="relative">
+                                                <img
+                                                    src={user.picture}
+                                                    alt={user.name || 'User'}
+                                                    className="h-16 w-16 rounded-full object-cover object-center ring-2 ring-blue-500/30 shadow-xl"
+                                                    style={{ objectPosition: 'center center' }}
+                                                />
+                                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                                    <MessageSquare className="w-2.5 h-2.5 text-white" strokeWidth={2.5} />
+                                                </div>
+                                            </div>
                                         ) : (
-                                            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                                                <User className="h-7 w-7 text-white flex-shrink-0" />
+                                            <div className="relative">
+                                                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-xl shadow-blue-500/20">
+                                                    <User className="h-8 w-8 text-white flex-shrink-0" />
+                                                </div>
+                                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white dark:ring-gray-950">
+                                                    <MessageSquare className="w-2.5 h-2.5 text-white" strokeWidth={2.5} />
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                     <h2 className="empty-state-title mb-3 text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
-                                        👋 How can I help you today?
+                                        How can I help you today?
                                     </h2>
                                     <p className="empty-state-description mb-10 max-w-md text-gray-500 dark:text-gray-400">
-                                        🤖 I can help you answer questions about your knowledge base, analyze documents, and more. ✨
+                                        Ask questions about your knowledge base, analyze documents, and extract insights instantly.
                                     </p>
 
                                     {/* Suggested Questions */}
                                     <div className="suggested-questions-container w-full max-w-6xl mx-auto">
-                                        <h3 className="suggested-questions-title text-sm font-semibold text-gray-700 dark:text-gray-300 mb-6 text-center">
-                                            💡 Try asking questions like:
+                                        <h3 className="suggested-questions-title flex items-center justify-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-6 text-center">
+                                            <Lightbulb className="w-4 h-4 text-amber-500" strokeWidth={2} />
+                                            Try asking questions like:
                                         </h3>
                                         <div className="suggested-questions-grid grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
                                             {[
@@ -683,7 +694,7 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                                             onClick={() => handleSend(question)}
                                                             className={`suggested-question-button w-full flex items-start gap-2 rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:bg-blue-50 hover:border-blue-300 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-blue-950/20 dark:hover:border-blue-700 transition-all duration-200 group ${qIdx >= 1 ? 'hidden sm:flex' : ''}`}
                                                         >
-                                                            <span className="text-blue-500 dark:text-blue-400 group-hover:scale-110 transition-transform">→</span>
+                                                            <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
                                                             <span className="flex-1">{question}</span>
                                                         </button>
                                                     ))}
