@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { User, Sparkles, MessageSquare } from 'lucide-react';
+import { CircleUser, Sparkles, MessagesSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useUserContext } from '@/contexts/UserContext';
 import { clsx } from 'clsx';
@@ -36,7 +36,9 @@ export default function ConversationHistory({ messages, onMessageClick, selected
             {/* History Header */}
             <div className="conversation-history-header p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
                 <div className="conversation-history-header-content flex items-center gap-2">
-                    <MessageSquare className="conversation-history-header-icon h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-500/25">
+                        <MessagesSquare className="conversation-history-header-icon h-4 w-4 text-white" strokeWidth={1.5} />
+                    </div>
                     <h2 className="conversation-history-header-title text-lg font-semibold text-gray-900 dark:text-white">Conversation History</h2>
                 </div>
                 <p className="conversation-history-header-count text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -84,10 +86,10 @@ export default function ConversationHistory({ messages, onMessageClick, selected
                                                     style={{ objectPosition: 'center center' }}
                                                 />
                                             ) : (
-                                                <User size={14} className="flex-shrink-0" />
+                                                <CircleUser size={14} className="flex-shrink-0" strokeWidth={1.5} />
                                             )
                                         ) : (
-                                            <Sparkles size={14} className="flex-shrink-0" />
+                                            <Sparkles size={14} className="flex-shrink-0" strokeWidth={1.5} />
                                         )}
                                     </div>
 
