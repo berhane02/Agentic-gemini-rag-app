@@ -8,7 +8,7 @@ import ChatInput from './ChatInput';
 import AuthButton from './AuthButton';
 import ConfirmDialog from './ConfirmDialog';
 import ConversationHistory from './ConversationHistory';
-import { User, Trash2, Home, History, MessageSquare, Lightbulb, ArrowRight } from 'lucide-react';
+import { CircleUser, Trash2, House, Clock, MessageCircle, Lightbulb, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { logger } from '@/lib/logger';
 
@@ -388,10 +388,10 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                 }`}
                                 title="Home Chat"
                             >
-                                <Home 
-                                    size={14} 
+                                <House
+                                    size={14}
                                     className={activeTab === 'home' ? 'text-white' : 'text-gray-500 dark:text-gray-400'}
-                                    strokeWidth={2.5}
+                                    strokeWidth={1.75}
                                 />
                             </button>
                             <button
@@ -403,10 +403,10 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                 }`}
                                 title="Previous Chat"
                             >
-                                <History 
-                                    size={14} 
+                                <Clock
+                                    size={14}
                                     className={activeTab === 'previous' ? 'text-white' : 'text-gray-500 dark:text-gray-400'}
-                                    strokeWidth={2.5}
+                                    strokeWidth={1.75}
                                 />
                                 {previousMessages.length > 0 && (
                                     <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 text-white text-[7px] flex items-center justify-center font-bold">
@@ -421,7 +421,7 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                     className="p-1 rounded-md bg-gradient-to-br from-red-500 to-rose-600 shadow-md shrink-0"
                                     title="Clear chat"
                                 >
-                                    <Trash2 size={14} className="text-white" strokeWidth={2.5} />
+                                    <Trash2 size={14} className="text-white" strokeWidth={1.75} />
                                 </motion.button>
                             )}
                         </div>
@@ -469,14 +469,14 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                         ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-500/30'
                                         : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-gradient-to-br group-hover:from-blue-100 group-hover:to-indigo-100 dark:group-hover:from-blue-900/30 dark:group-hover:to-indigo-900/30'
                                 }`}>
-                                    <Home 
+                                    <House
                                         size={10}
                                         className={`md:w-[12px] md:h-[12px] lg:w-[14px] lg:h-[14px] transition-all duration-200 ${
                                             activeTab === 'home'
                                                 ? 'text-white'
                                                 : 'text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
                                         }`}
-                                        strokeWidth={activeTab === 'home' ? 2.5 : 2}
+                                        strokeWidth={activeTab === 'home' ? 2 : 1.5}
                                     />
                                 </div>
                                 <span className="relative font-semibold hidden md:inline text-xs whitespace-nowrap">Home Chat</span>
@@ -499,14 +499,14 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                         ? 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-md shadow-purple-500/30'
                                         : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-gradient-to-br group-hover:from-purple-100 group-hover:to-pink-100 dark:group-hover:from-purple-900/30 dark:group-hover:to-pink-900/30'
                                 }`}>
-                                    <History 
+                                    <Clock
                                         size={10}
                                         className={`md:w-[12px] md:h-[12px] lg:w-[14px] lg:h-[14px] transition-all duration-200 ${
                                             activeTab === 'previous'
                                                 ? 'text-white'
                                                 : 'text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400'
                                         }`}
-                                        strokeWidth={activeTab === 'previous' ? 2.5 : 2}
+                                        strokeWidth={activeTab === 'previous' ? 2 : 1.5}
                                     />
                                 </div>
                                 <span className="relative font-semibold hidden md:inline text-xs whitespace-nowrap">Previous Chat</span>
@@ -539,10 +539,10 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                     {/* Content */}
                                     <div className="relative flex items-center justify-center gap-0.5 md:gap-1 lg:gap-1.5">
                                         <div className="flex items-center justify-center w-4 h-4 md:w-5 md:h-5 rounded-md bg-gradient-to-br from-red-500 to-rose-600 shadow-lg shadow-red-500/30 group-hover:shadow-xl group-hover:shadow-red-500/50 transition-all duration-200 shrink-0">
-                                            <Trash2 
+                                            <Trash2
                                                 size={9}
                                                 className={`md:w-[11px] md:h-[11px] text-white transition-all duration-200 group-hover:scale-110`}
-                                                strokeWidth={2.5}
+                                                strokeWidth={1.75}
                                             />
                                         </div>
                                         <span className="text-xs font-semibold text-red-600 dark:text-red-400 group-hover:text-white transition-colors duration-200 hidden xl:inline whitespace-nowrap">

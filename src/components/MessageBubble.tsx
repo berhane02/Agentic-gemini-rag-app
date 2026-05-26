@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { User, Sparkles, Pencil } from 'lucide-react';
+import { CircleUser, Sparkles, PenLine } from 'lucide-react';
 import { useUserContext } from '@/contexts/UserContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -33,7 +33,7 @@ export default function MessageBubble({ message, messageIndex, onEdit }: Message
                 "message-avatar flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full border shadow-sm overflow-hidden",
                 isUser
                     ? "message-avatar-user bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
-                    : "message-avatar-gemini bg-gradient-to-tr from-blue-500 to-cyan-500 text-white border-transparent"
+                    : "message-avatar-gemini bg-gradient-to-tr from-blue-500 to-cyan-400 text-white border-transparent ring-2 ring-cyan-400/30 shadow-lg shadow-blue-500/20"
             )}>
                 {isUser ? (
                     user?.picture ? (
@@ -44,10 +44,10 @@ export default function MessageBubble({ message, messageIndex, onEdit }: Message
                             style={{ objectPosition: 'center center' }}
                         />
                     ) : (
-                        <User size={18} className="flex-shrink-0" />
+                        <CircleUser size={18} className="flex-shrink-0" strokeWidth={1.5} />
                     )
                 ) : (
-                    <Sparkles size={18} className="flex-shrink-0" />
+                    <Sparkles size={18} className="flex-shrink-0" strokeWidth={1.5} />
                 )}
             </div>
             <div className="message-content flex-1 space-y-2 overflow-hidden relative">
@@ -69,7 +69,7 @@ export default function MessageBubble({ message, messageIndex, onEdit }: Message
                             title="Edit message"
                             aria-label="Edit message"
                         >
-                            <Pencil size={16} />
+                            <PenLine size={16} strokeWidth={1.5} />
                         </motion.button>
                     </div>
                 )}
