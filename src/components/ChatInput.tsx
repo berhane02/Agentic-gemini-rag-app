@@ -182,9 +182,9 @@ export default function ChatInput({
                             className="chat-input-send-button-icon-wrapper relative z-10"
                         >
                             {isButtonEnabled ? (
-                                <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                                <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
                             ) : (
-                                <SendHorizontal className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                                <SendHorizontal className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
                             )}
                         </motion.div>
                     </motion.button>

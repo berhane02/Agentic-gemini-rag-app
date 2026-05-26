@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Sparkles, Zap, Shield, BookOpen } from 'lucide-react';
+import { ChevronDown, Sparkles, Zap, Shield, BookMarked } from 'lucide-react';
 import { useUserContext } from '@/contexts/UserContext';
 import { useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
@@ -49,7 +49,7 @@ export default function LandingPage() {
                     <div className="landing-page-logo-icon-wrapper relative">
                         <div className="landing-page-logo-icon-bg absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg blur-sm"></div>
                         <div className="landing-page-logo-icon relative w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" strokeWidth={1.5} />
                         </div>
                     </div>
                     <span className="landing-page-logo-text text-white font-semibold text-base sm:text-lg tracking-tight">RAG Chatbot</span>
@@ -127,7 +127,7 @@ export default function LandingPage() {
                             desc: 'Your data stays protected'
                         },
                         {
-                            Icon: BookOpen,
+                            Icon: BookMarked,
                             gradient: 'from-blue-500 to-indigo-500',
                             glow: 'shadow-blue-500/25',
                             title: 'Knowledge Base',
@@ -139,7 +139,7 @@ export default function LandingPage() {
                             className="landing-page-feature-card group p-6 sm:p-8 rounded-2xl bg-white/4 border border-white/8 backdrop-blur-sm hover:bg-white/7 hover:border-white/15 transition-all duration-300"
                         >
                             <div className={`landing-page-feature-icon inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.glow} mb-5`}>
-                                <feature.Icon className="w-5 h-5 text-white" strokeWidth={2} />
+                                <feature.Icon className="w-5 h-5 text-white" strokeWidth={1.75} />
                             </div>
                             <h3 className="landing-page-feature-title text-lg sm:text-xl font-semibold text-white mb-2">{feature.title}</h3>
                             <p className="landing-page-feature-desc text-sm sm:text-base text-white/50 leading-relaxed">{feature.desc}</p>

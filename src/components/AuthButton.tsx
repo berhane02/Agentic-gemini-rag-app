@@ -2,7 +2,7 @@
 
 import { useUserContext } from '@/contexts/UserContext';
 import { useClerk } from '@clerk/nextjs';
-import { LogIn, LogOut, User } from 'lucide-react';
+import { LogIn, LogOut, CircleUser } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { memo, useState, useRef, useEffect } from 'react';
 
@@ -96,7 +96,7 @@ function AuthButton() {
                                         whileTap={{ scale: 0.98 }}
                                         className="auth-button-dropdown-logout-button w-full px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
                                     >
-                                        <LogOut size={16} />
+                                        <LogOut size={16} strokeWidth={1.75} />
                                         <span>Logout</span>
                                     </motion.button>
                                 </div>
@@ -138,7 +138,7 @@ function AuthButton() {
                     title="Logout"
                 >
                     <div className="auth-button-logout-button-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                    <LogOut size={16} className="relative z-10" />
+                    <LogOut size={16} className="relative z-10" strokeWidth={1.75} />
                     <span className="relative z-10">Logout</span>
                 </motion.button>
             </div>
@@ -158,7 +158,7 @@ function AuthButton() {
             className="auth-button-login-button flex items-center justify-center gap-2 px-2 md:px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-lg transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50"
             title="Login"
         >
-            <LogIn size={18} className="md:w-[18px] md:h-[18px]" />
+            <LogIn size={18} className="md:w-[18px] md:h-[18px]" strokeWidth={1.75} />
             <span className="hidden md:inline">Login</span>
         </motion.button>
     );

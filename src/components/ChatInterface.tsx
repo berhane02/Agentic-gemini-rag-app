@@ -619,16 +619,16 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                                     style={{ objectPosition: 'center center' }}
                                                 />
                                                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                                                    <MessageSquare className="w-2.5 h-2.5 text-white" strokeWidth={2.5} />
+                                                    <MessageCircle className="w-2.5 h-2.5 text-white" strokeWidth={1.75} />
                                                 </div>
                                             </div>
                                         ) : (
                                             <div className="relative">
                                                 <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-xl shadow-blue-500/20">
-                                                    <User className="h-8 w-8 text-white flex-shrink-0" />
+                                                    <CircleUser className="h-8 w-8 text-white flex-shrink-0" strokeWidth={1.5} />
                                                 </div>
                                                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white dark:ring-gray-950">
-                                                    <MessageSquare className="w-2.5 h-2.5 text-white" strokeWidth={2.5} />
+                                                    <MessageCircle className="w-2.5 h-2.5 text-white" strokeWidth={1.75} />
                                                 </div>
                                             </div>
                                         )}
@@ -643,7 +643,7 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                     {/* Suggested Questions */}
                                     <div className="suggested-questions-container w-full max-w-6xl mx-auto">
                                         <h3 className="suggested-questions-title flex items-center justify-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-6 text-center">
-                                            <Lightbulb className="w-4 h-4 text-amber-500" strokeWidth={2} />
+                                            <Lightbulb className="w-4 h-4 text-amber-500" strokeWidth={1.5} />
                                             Try asking questions like:
                                         </h3>
                                         <div className="suggested-questions-grid grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
@@ -694,7 +694,7 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                                             onClick={() => handleSend(question)}
                                                             className={`suggested-question-button w-full flex items-start gap-2 rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:bg-blue-50 hover:border-blue-300 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-blue-950/20 dark:hover:border-blue-700 transition-all duration-200 group ${qIdx >= 1 ? 'hidden sm:flex' : ''}`}
                                                         >
-                                                            <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
+                                                            <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.5} />
                                                             <span className="flex-1">{question}</span>
                                                         </button>
                                                     ))}
