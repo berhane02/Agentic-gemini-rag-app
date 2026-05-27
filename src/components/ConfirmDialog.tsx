@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X } from 'lucide-react';
+import { CircleAlert, X } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface ConfirmDialogProps {
@@ -115,7 +115,7 @@ export default function ConfirmDialog({
                                         transition={{ duration: 2, repeat: Infinity }}
                                     />
                                     <div className="confirm-dialog-icon-circle relative bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/40 dark:to-red-900/30 p-4 rounded-full border-2 border-red-200 dark:border-red-800">
-                                        <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
+                                        <CircleAlert className="w-8 h-8 text-red-600 dark:text-red-400" strokeWidth={1.5} />
                                     </div>
                                 </div>
                             </motion.div>
@@ -164,7 +164,7 @@ export default function ConfirmDialog({
                                     <div className="confirm-dialog-confirm-button-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                                     <span className="confirm-dialog-confirm-button-text relative z-10 flex items-center justify-center gap-2">
                                         {confirmText}
-                                        <AlertTriangle className="w-4 h-4 opacity-80" />
+                                        <CircleAlert className="w-4 h-4 opacity-80" strokeWidth={1.5} />
                                     </span>
                                 </motion.button>
                             </motion.div>
