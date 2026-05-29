@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Sparkles, Zap, Shield, BookMarked } from 'lucide-react';
+import { Sparkles, Zap, Shield, BookMarked } from 'lucide-react';
 import { useUserContext } from '@/contexts/UserContext';
 import { useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
@@ -53,7 +53,6 @@ export default function LandingPage() {
                         </div>
                     </div>
                     <span className="landing-page-logo-text text-white font-semibold text-base sm:text-lg tracking-tight">RAG Chatbot</span>
-                    <ChevronDown className="landing-page-logo-dropdown w-4 h-4 text-white/60 group-hover:text-white/100" />
                 </div>
 
                 {/* Action Buttons */}
@@ -98,10 +97,6 @@ export default function LandingPage() {
                     <h1 className="landing-page-prompt-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold text-white text-center leading-[1.1] mb-4 tracking-tight">
                         <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
                             Personal Agent assistant
-                        </span>
-                        <br />
-                        <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-                            for Docs & Images
                         </span>
                     </h1>
                     <p className="landing-page-prompt-subtitle text-lg sm:text-xl md:text-2xl text-white/60 text-center max-w-2xl mx-auto leading-relaxed">
