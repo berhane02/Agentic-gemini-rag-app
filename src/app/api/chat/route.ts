@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { message } = body;
+        const { message, context } = body;
 
         // Validate message
         const validation = validateMessage(message);
@@ -64,9 +64,17 @@ export async function POST(req: NextRequest) {
         // Sanitize message
         const sanitizedMessage = sanitizeMessage(message);
 
+        // Optional condensed conversation summary used as extra context.
+        const conversationContext =
+            typeof context === 'string' ? sanitizeMessage(context).slice(0, 10000) : undefined;
+
         // Query RAG system
-        logger.info('Processing chat query', { userId, messageLength: sanitizedMessage.length });
-        const stream = await queryRAG(sanitizedMessage, userId);
+        logger.info('Processing chat query', {
+            userId,
+            messageLength: sanitizedMessage.length,
+            hasContext: !!conversationContext,
+        });
+        const stream = await queryRAG(sanitizedMessage, userId, conversationContext);
 
         return new NextResponse(stream, {
             headers: {
