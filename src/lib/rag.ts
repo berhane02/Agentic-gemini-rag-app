@@ -142,7 +142,7 @@ function iteratorToStream(iterator: AsyncIterable<any>) {
     });
 }
 
-export async function queryRAG(query: string, userId: string) {
+export async function queryRAG(query: string, userId: string, context?: string) {
     if (!userId) {
         const errorMessage = `**Authentication Error**
 
@@ -150,6 +150,12 @@ User ID is required to query documents. Please log in and try again.`;
         logger.warn('Query attempted without userId');
         return createErrorStream(errorMessage);
     }
+
+    // When a condensed summary of the earlier conversation is provided, prepend it
+    // so the model can answer follow-up questions with awareness of prior turns.
+    const effectiveQuery = context && context.trim()
+        ? `Here is a summary of the earlier conversation for context:\n\n${context.trim()}\n\nUsing that context together with the documents, answer the user's current message:\n\n${query}`
+        : query;
 
     try {
         // Try to use Gemini File Search first - user-specific
@@ -163,7 +169,7 @@ User ID is required to query documents. Please log in and try again.`;
             logger.info('Using file search store for query', { userId, storeName: store.name });
             
             // Attempt query - Gemini will return appropriate error if store is empty
-            const response = await queryWithFileSearchStream(query, userId);
+            const response = await queryWithFileSearchStream(effectiveQuery, userId);
             return iteratorToStream(response);
         } catch (queryError: any) {
             logger.error('Query error for user', queryError, { userId });

@@ -7,8 +7,9 @@ import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
 import AuthButton from './AuthButton';
 import ConfirmDialog from './ConfirmDialog';
+import CondenseModal from './CondenseModal';
 import ConversationHistory from './ConversationHistory';
-import { CircleUser, Trash2, House, Clock, MessageCircle, Lightbulb, ArrowRight } from 'lucide-react';
+import { CircleUser, Trash2, House, Clock, MessageCircle, Lightbulb, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { logger } from '@/lib/logger';
 
@@ -28,10 +29,16 @@ interface ChatInterfaceProps {
 }
 
 const STORAGE_KEY_PREFIX = 'chat-messages_';
+const SUMMARY_STORAGE_KEY_PREFIX = 'chat-summary_';
 
 // Get user-specific storage key
 function getStorageKey(userId: string) {
     return `${STORAGE_KEY_PREFIX}${userId}`;
+}
+
+// Get user-specific storage key for the condensed conversation summary
+function getSummaryStorageKey(userId: string) {
+    return `${SUMMARY_STORAGE_KEY_PREFIX}${userId}`;
 }
 
 type TabType = 'home' | 'previous';
@@ -40,6 +47,7 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
     const router = useRouter();
     const userId = user?.sub || 'anonymous';
     const storageKey = getStorageKey(userId);
+    const summaryStorageKey = getSummaryStorageKey(userId);
     const previousUserIdRef = useRef<string | null>(null);
     
     // Tab state - default to 'home' when user logs in
@@ -70,10 +78,12 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
     // Clear previous user's messages when user changes
     useEffect(() => {
         if (previousUserIdRef.current && previousUserIdRef.current !== userId && previousUserIdRef.current !== 'anonymous') {
-            // Clear previous user's messages
+            // Clear previous user's messages and summary
             const previousStorageKey = getStorageKey(previousUserIdRef.current);
+            const previousSummaryKey = getSummaryStorageKey(previousUserIdRef.current);
             try {
                 localStorage.removeItem(previousStorageKey);
+                localStorage.removeItem(previousSummaryKey);
             } catch (error) {
                 logger.error('Error clearing previous user messages', error);
             }
@@ -83,8 +93,9 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
         // Reset to home tab when user changes
         setActiveTab('home');
         setHomeMessages([]);
-        
-        // Load previous messages for new user
+        setHomeSummary(null);
+
+        // Load previous messages and summary for new user
         if (userId !== 'anonymous') {
             try {
                 const saved = localStorage.getItem(storageKey);
@@ -97,8 +108,16 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                 logger.error('Error loading messages from localStorage', error);
                 setPreviousMessages([]);
             }
+            try {
+                setPreviousSummary(localStorage.getItem(summaryStorageKey) || null);
+            } catch (error) {
+                logger.error('Error loading summary from localStorage', error);
+                setPreviousSummary(null);
+            }
+        } else {
+            setPreviousSummary(null);
         }
-    }, [userId, storageKey]);
+    }, [userId, storageKey, summaryStorageKey]);
     
     // Handle tab switching
     const handleTabSwitch = (tab: TabType) => {
@@ -113,6 +132,9 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                 setPreviousMessages(merged);
                 // Clear home messages after merging
                 setHomeMessages([]);
+                // The home summary described the now-merged messages; drop it so it
+                // isn't sent as stale context for a fresh home chat.
+                setHomeSummary(null);
             } catch (error) {
                 logger.error('Error saving messages to localStorage', error);
             }
@@ -183,6 +205,25 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
     const [editContent, setEditContent] = useState<string>('');
     const [showClearDialog, setShowClearDialog] = useState(false);
     const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
+
+    // Condensed conversation summary, kept per-tab (mirrors home/previous messages).
+    // Used both for display and as context for follow-up questions.
+    const [homeSummary, setHomeSummary] = useState<string | null>(null);
+    const [previousSummary, setPreviousSummary] = useState<string | null>(() => {
+        if (typeof window !== 'undefined' && userId !== 'anonymous') {
+            try {
+                return localStorage.getItem(getSummaryStorageKey(userId)) || null;
+            } catch (error) {
+                logger.error('Error loading summary from localStorage', error);
+            }
+        }
+        return null;
+    });
+    const conversationSummary = activeTab === 'home' ? homeSummary : previousSummary;
+    const setConversationSummary = activeTab === 'home' ? setHomeSummary : setPreviousSummary;
+    const [showCondenseModal, setShowCondenseModal] = useState(false);
+    const [isCondensing, setIsCondensing] = useState(false);
+    const [condenseError, setCondenseError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const lastMessageLengthRef = useRef<number>(0);
     const isInitialMount = useRef(true);
@@ -204,7 +245,21 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
             }
         }
     }, [previousMessages, storageKey, userId, activeTab]);
-    
+
+    // Persist the previous-chat summary to localStorage whenever it changes - user-specific
+    useEffect(() => {
+        if (userId === 'anonymous') return;
+        try {
+            if (previousSummary) {
+                localStorage.setItem(summaryStorageKey, previousSummary);
+            } else {
+                localStorage.removeItem(summaryStorageKey);
+            }
+        } catch (error) {
+            logger.error('Error saving summary to localStorage', error);
+        }
+    }, [previousSummary, summaryStorageKey, userId]);
+
     // When switching to previous tab, ensure we have the latest from localStorage
     useEffect(() => {
         if (activeTab === 'previous' && userId !== 'anonymous') {
@@ -252,9 +307,48 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                 }
             }
         }
+        // Clearing the conversation invalidates its summary.
+        setConversationSummary(null);
         setEditingIndex(null);
         setEditContent('');
         setSelectedHistoryIndex(null);
+    };
+
+    const handleCondense = async () => {
+        const currentMessages = activeTab === 'home' ? homeMessages : previousMessages;
+        if (currentMessages.length < 2 || isCondensing) return;
+
+        setShowCondenseModal(true);
+        setIsCondensing(true);
+        setCondenseError(null);
+
+        try {
+            const response = await fetch('/api/condense', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: currentMessages }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Server error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (!data.summary) {
+                throw new Error('No summary was returned. Please try again.');
+            }
+            setConversationSummary(data.summary);
+        } catch (error) {
+            logger.error('Error condensing conversation', error);
+            setCondenseError(
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to condense conversation. Please try again.'
+            );
+        } finally {
+            setIsCondensing(false);
+        }
     };
 
     const handleEdit = (index: number, content: string) => {
@@ -298,10 +392,14 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
         setIsLoading(true);
 
         try {
+            const currentSummary = activeTab === 'home' ? homeSummary : previousSummary;
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: content }),
+                body: JSON.stringify({
+                    message: content,
+                    ...(currentSummary ? { context: currentSummary } : {}),
+                }),
             });
 
             if (!response.ok) {
@@ -414,6 +512,17 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                     </span>
                                 )}
                             </button>
+                            {messages.length >= 2 && (
+                                <motion.button
+                                    onClick={handleCondense}
+                                    disabled={isCondensing}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="p-1 rounded-md bg-gradient-to-br from-purple-500 to-indigo-600 shadow-md shrink-0 disabled:opacity-60"
+                                    title="Condense chat"
+                                >
+                                    <Sparkles size={14} className="text-white" strokeWidth={1.75} />
+                                </motion.button>
+                            )}
                             {messages.length > 0 && (
                                 <motion.button
                                     onClick={handleClearChat}
@@ -522,6 +631,39 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                 )}
                             </button>
                             
+                            {/* Condense Chat Button - Summarizes the conversation */}
+                            {messages.length >= 2 && (
+                                <motion.button
+                                    onClick={handleCondense}
+                                    disabled={isCondensing}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="condense-chat-button group relative px-1.5 md:px-2 lg:px-2.5 xl:px-3 py-1 md:py-1.5 rounded-md transition-all duration-200 ml-0.5 md:ml-1 lg:ml-1.5 overflow-hidden shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
+                                    title="Condense chat"
+                                    aria-label="Condense chat"
+                                >
+                                    {/* Animated gradient background */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                    {/* Content */}
+                                    <div className="relative flex items-center justify-center gap-0.5 md:gap-1 lg:gap-1.5">
+                                        <div className="flex items-center justify-center w-4 h-4 md:w-5 md:h-5 rounded-md bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg shadow-purple-500/30 group-hover:shadow-xl group-hover:shadow-purple-500/50 transition-all duration-200 shrink-0">
+                                            <Sparkles
+                                                size={9}
+                                                className="md:w-[11px] md:h-[11px] text-white transition-all duration-200 group-hover:scale-110"
+                                                strokeWidth={1.75}
+                                            />
+                                        </div>
+                                        <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 group-hover:text-white transition-colors duration-200 hidden xl:inline whitespace-nowrap">
+                                            Condense
+                                        </span>
+                                    </div>
+
+                                    {/* Shine effect on hover */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                                </motion.button>
+                            )}
+
                             {/* Clear Chat Button - Next to Previous Chat */}
                             {messages.length > 0 && (
                                 <motion.button
@@ -602,6 +744,16 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                         confirmText="Clear All"
                         cancelText="Cancel"
                         confirmColor="red"
+                    />
+
+                    {/* Condensed Conversation Summary Modal */}
+                    <CondenseModal
+                        isOpen={showCondenseModal}
+                        onClose={() => setShowCondenseModal(false)}
+                        summary={conversationSummary}
+                        isLoading={isCondensing}
+                        error={condenseError}
+                        onRegenerate={handleCondense}
                     />
 
                     <main className="chat-main-content modern-scrollbar flex-1 overflow-y-auto scroll-smooth relative pb-32 pt-4 sm:pt-6">

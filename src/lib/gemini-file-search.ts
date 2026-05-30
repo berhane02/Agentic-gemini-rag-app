@@ -426,6 +426,63 @@ export async function queryWithFileSearchStream(query: string, userId: string) {
     throw lastError || new Error("No available models found");
 }
 
+// Condense a conversation into a short summary that can be reused as context.
+// Uses a plain generateContent call (no File Search tool) since we're summarizing
+// the chat transcript itself, not querying the knowledge base.
+export async function condenseConversation(
+    messages: { role: 'user' | 'model'; content: string }[],
+    userId: string
+): Promise<string> {
+    if (!userId) {
+        throw new Error('User ID is required to condense a conversation');
+    }
+
+    const client = await getAI();
+
+    const transcript = messages
+        .map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+        .join('\n\n');
+
+    const prompt = `You are summarizing a conversation between a user and a document-based AI assistant. ` +
+        `Write a concise summary (under 200 words) that captures the user's main questions and goals, ` +
+        `the key facts and answers established so far, and any unresolved threads. ` +
+        `Write it as compact notes that can be fed back in as context to continue the conversation. ` +
+        `Do not add information that was not discussed.\n\nConversation:\n${transcript}\n\nSummary:`;
+
+    // Same model preference order as File Search queries.
+    const models = ['gemini-2.5-flash', 'gemini-2.5-pro'];
+
+    let lastError: any = null;
+    for (const model of models) {
+        try {
+            const response = await client.models.generateContent({
+                model,
+                contents: prompt,
+            });
+
+            // The @google/genai SDK exposes text as either a getter or a method
+            // depending on version, so handle both.
+            const text =
+                typeof (response as any)?.text === 'function'
+                    ? (response as any).text()
+                    : (response as any)?.text;
+
+            logger.info('Condensed conversation', { userId, model, messageCount: messages.length });
+            return (text || '').trim();
+        } catch (error: any) {
+            lastError = error;
+            if (error?.status === 404 || error?.code === 404 || error?.status === 400 || error?.code === 400) {
+                logger.debug('Model not usable for condense, trying next', { model, userId });
+                continue;
+            }
+            logger.error('Error condensing conversation', error, { userId, model });
+            throw error;
+        }
+    }
+
+    throw lastError || new Error('No available models found for condensing');
+}
+
 export function getFileSearchStoreName(userId: string) {
     const store = userFileStores.get(userId);
     return store?.name || null;
