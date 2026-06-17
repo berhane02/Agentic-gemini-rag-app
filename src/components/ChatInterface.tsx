@@ -553,8 +553,8 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                 <div className="hidden sm:flex px-2 md:px-3 lg:px-4 py-1 md:py-1.5 items-center gap-1 md:gap-2 lg:gap-3 xl:gap-4 relative min-w-0">
                     {/* Left section - Title and Tabs */}
                     <div className="flex items-center gap-1 md:gap-2 lg:gap-3 shrink-0 min-w-0">
-                        {/* RAG Chatbot Title */}
-                        <h1 className="chat-header-title text-xs md:text-sm lg:text-base font-semibold text-gray-800 dark:text-white whitespace-nowrap shrink-0">RAG Chatbot</h1>
+                        {/* RAG Agent Title */}
+                        <h1 className="chat-header-title text-xs md:text-sm lg:text-base font-semibold text-gray-800 dark:text-white whitespace-nowrap shrink-0">RAG Agent</h1>
                         
                         {/* Divider */}
                         <div className="h-4 md:h-5 w-px bg-gray-300 dark:bg-gray-700 shrink-0" />
