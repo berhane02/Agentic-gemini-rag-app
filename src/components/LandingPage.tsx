@@ -52,7 +52,7 @@ export default function LandingPage() {
                             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" strokeWidth={1.5} />
                         </div>
                     </div>
-                    <span className="landing-page-logo-text text-white font-semibold text-base sm:text-lg tracking-tight">RAG Chatbot</span>
+                    <span className="landing-page-logo-text text-white font-semibold text-base sm:text-lg tracking-tight">RAG Agent</span>
                 </div>
 
                 {/* Action Buttons */}
