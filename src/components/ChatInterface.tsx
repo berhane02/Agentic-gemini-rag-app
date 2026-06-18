@@ -793,64 +793,26 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                     </p>
 
                                     {/* Suggested Questions */}
-                                    <div className="suggested-questions-container w-full max-w-6xl mx-auto">
-                                        <h3 className="suggested-questions-title flex items-center justify-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-6 text-center">
+                                    <div className="suggested-questions-container w-full max-w-3xl mx-auto">
+                                        <h3 className="suggested-questions-title flex items-center justify-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center">
                                             <Lightbulb className="w-4 h-4 text-amber-500" strokeWidth={1.5} />
-                                            Try asking questions like:
+                                            Try asking:
                                         </h3>
-                                        <div className="suggested-questions-grid grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div className="suggested-questions-grid grid w-full grid-cols-1 gap-2 sm:grid-cols-2">
                                             {[
-                                                {
-                                                    category: "Document Analysis",
-                                                    questions: [
-                                                        "Summarize the main points of the uploaded document",
-                                                        "What are the key concepts discussed?",
-                                                        "Extract the most important information"
-                                                    ]
-                                                },
-                                                {
-                                                    category: "Specific Queries",
-                                                    questions: [
-                                                        "What does the document say about [topic]?",
-                                                        "Find information related to [keyword]",
-                                                        "Explain [concept] in detail"
-                                                    ]
-                                                },
-                                                {
-                                                    category: "Content Understanding",
-                                                    questions: [
-                                                        "What is the document about?",
-                                                        "What are the main conclusions?",
-                                                        "List the important dates or numbers mentioned"
-                                                    ]
-                                                },
-                                                {
-                                                    category: "Practical Use",
-                                                    questions: [
-                                                        "Help me write a summary based on the document",
-                                                        "What should I know from this document?",
-                                                        "Create a brief overview of the content"
-                                                    ]
-                                                }
-                                            ].map((section, sectionIdx) => (
-                                                <div 
-                                                    key={sectionIdx} 
-                                                    className={`suggested-questions-category space-y-2 ${sectionIdx >= 2 ? 'hidden sm:block' : ''}`}
+                                                "Summarize the main points of the document",
+                                                "What are the key concepts discussed?",
+                                                "What does the document say about [topic]?",
+                                                "What are the main conclusions?"
+                                            ].map((question, qIdx) => (
+                                                <button
+                                                    key={qIdx}
+                                                    onClick={() => handleSend(question)}
+                                                    className="suggested-question-button w-full flex items-start gap-2 rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:bg-blue-50 hover:border-blue-300 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-blue-950/20 dark:hover:border-blue-700 transition-all duration-200 group"
                                                 >
-                                                    <h4 className="suggested-questions-category-title text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-2">
-                                                        {section.category}
-                                                    </h4>
-                                                    {section.questions.map((question, qIdx) => (
-                                                        <button
-                                                            key={qIdx}
-                                                            onClick={() => handleSend(question)}
-                                                            className={`suggested-question-button w-full flex items-start gap-2 rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:bg-blue-50 hover:border-blue-300 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-blue-950/20 dark:hover:border-blue-700 transition-all duration-200 group ${qIdx >= 1 ? 'hidden sm:flex' : ''}`}
-                                                        >
-                                                            <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.5} />
-                                                            <span className="flex-1">{question}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
+                                                    <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.5} />
+                                                    <span className="flex-1">{question}</span>
+                                                </button>
                                             ))}
                                         </div>
                                     </div>
