@@ -467,51 +467,81 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
     return (
         <div className="chat-interface-container flex h-screen flex-col bg-white dark:bg-gray-950">
             {/* Navbar - Responsive */}
-            <header className="chat-header border-b bg-white dark:bg-gray-900 dark:border-gray-800 shadow-sm sticky top-0 z-20">
+            <header className="chat-header border-b border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60 shadow-sm sticky top-0 z-20">
                 {/* Mobile Layout */}
                 <div className="px-2 py-1 sm:hidden flex items-center gap-1.5 relative min-w-0">
-                    {/* Left section - Title and Tabs */}
+                    {/* Left section - Brand and Tabs */}
                     <div className="flex items-center gap-1.5 shrink-0 min-w-0">
-                        {/* Title - Smaller on mobile */}
-                        <h1 className="text-xs font-semibold text-gray-800 dark:text-white whitespace-nowrap shrink-0">RAG</h1>
-                        
-                        {/* Tabs - Icons only on mobile */}
+                        {/* Brand badge + wordmark */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                            <motion.div
+                                whileTap={{ scale: 0.9, rotate: -8 }}
+                                className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/30"
+                            >
+                                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-white/30 to-transparent" />
+                                <Sparkles size={12} className="relative text-white" strokeWidth={2} />
+                            </motion.div>
+                            <h1 className="text-xs font-bold tracking-tight whitespace-nowrap shrink-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">RAG</h1>
+                        </div>
+
+                        {/* Segmented tab control with animated sliding pill - Icons only on mobile */}
                         <div className="flex items-center gap-1 shrink-0">
+                            <div className="relative flex items-center gap-0.5 p-0.5 rounded-lg bg-gray-100/80 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 shrink-0">
                             <button
                                 onClick={() => handleTabSwitch('home')}
-                                className={`p-1 rounded-md transition-all duration-200 relative shrink-0 ${
+                                className={`relative p-1 rounded-md transition-colors duration-200 shrink-0 ${
                                     activeTab === 'home'
-                                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md'
-                                        : 'bg-gray-100 dark:bg-gray-800'
+                                        ? 'text-blue-700 dark:text-blue-300'
+                                        : 'text-gray-500 dark:text-gray-400'
                                 }`}
                                 title="Home Chat"
                             >
+                                {activeTab === 'home' && (
+                                    <motion.div
+                                        layoutId="activeTabPillMobile"
+                                        className="absolute inset-0 rounded-md bg-white dark:bg-gray-900 shadow-sm ring-1 ring-blue-500/10 dark:ring-blue-400/20"
+                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                    />
+                                )}
                                 <House
                                     size={14}
-                                    className={activeTab === 'home' ? 'text-white' : 'text-gray-500 dark:text-gray-400'}
-                                    strokeWidth={1.75}
+                                    className="relative z-10"
+                                    strokeWidth={activeTab === 'home' ? 2.25 : 1.75}
                                 />
                             </button>
                             <button
                                 onClick={() => handleTabSwitch('previous')}
-                                className={`p-1 rounded-md transition-all duration-200 relative shrink-0 ${
+                                className={`relative p-1 rounded-md transition-colors duration-200 shrink-0 ${
                                     activeTab === 'previous'
-                                        ? 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-md'
-                                        : 'bg-gray-100 dark:bg-gray-800'
+                                        ? 'text-purple-700 dark:text-purple-300'
+                                        : 'text-gray-500 dark:text-gray-400'
                                 }`}
                                 title="Previous Chat"
                             >
+                                {activeTab === 'previous' && (
+                                    <motion.div
+                                        layoutId="activeTabPillMobile"
+                                        className="absolute inset-0 rounded-md bg-white dark:bg-gray-900 shadow-sm ring-1 ring-purple-500/10 dark:ring-purple-400/20"
+                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                    />
+                                )}
                                 <Clock
                                     size={14}
-                                    className={activeTab === 'previous' ? 'text-white' : 'text-gray-500 dark:text-gray-400'}
-                                    strokeWidth={1.75}
+                                    className="relative z-10"
+                                    strokeWidth={activeTab === 'previous' ? 2.25 : 1.75}
                                 />
                                 {previousMessages.length > 0 && (
-                                    <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 text-white text-[7px] flex items-center justify-center font-bold">
+                                    <motion.span
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                                        className="absolute -top-1 -right-1 z-20 h-3 w-3 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 text-white text-[7px] flex items-center justify-center font-bold shadow-sm"
+                                    >
                                         {previousMessages.length > 9 ? '9+' : previousMessages.length}
-                                    </span>
+                                    </motion.span>
                                 )}
                             </button>
+                            </div>
                             {messages.length >= 2 && (
                                 <motion.button
                                     onClick={handleCondense}
@@ -551,86 +581,87 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
 
                 {/* Tablet/Desktop Layout */}
                 <div className="hidden sm:flex px-2 md:px-3 lg:px-4 py-1 md:py-1.5 items-center gap-1 md:gap-2 lg:gap-3 xl:gap-4 relative min-w-0">
-                    {/* Left section - Title and Tabs */}
-                    <div className="flex items-center gap-1 md:gap-2 lg:gap-3 shrink-0 min-w-0">
-                        {/* RAG Agent Title */}
-                        <h1 className="chat-header-title text-xs md:text-sm lg:text-base font-semibold text-gray-800 dark:text-white whitespace-nowrap shrink-0">RAG Agent</h1>
-                        
+                    {/* Left section - Brand and Tabs */}
+                    <div className="flex items-center gap-2 md:gap-3 lg:gap-4 shrink-0 min-w-0">
+                        {/* Brand */}
+                        <div className="flex items-center gap-2 shrink-0">
+                            <motion.div
+                                whileHover={{ rotate: -8, scale: 1.08 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                                className="relative flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30"
+                            >
+                                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/30 to-transparent" />
+                                <Sparkles size={14} className="relative text-white md:w-4 md:h-4" strokeWidth={2} />
+                            </motion.div>
+                            <h1 className="chat-header-title text-sm md:text-base font-bold tracking-tight whitespace-nowrap shrink-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                                RAG Agent
+                            </h1>
+                        </div>
+
                         {/* Divider */}
-                        <div className="h-4 md:h-5 w-px bg-gray-300 dark:bg-gray-700 shrink-0" />
-                        
-                        {/* Tabs - with proper spacing to prevent overlap */}
+                        <div className="h-5 w-px bg-gradient-to-b from-transparent via-gray-300 dark:via-gray-700 to-transparent shrink-0" />
+
+                        {/* Segmented tab control with animated sliding pill */}
                         <div className="flex items-center gap-1 md:gap-1.5 lg:gap-2 shrink-0 min-w-0">
+                            <div className="relative flex items-center gap-0.5 p-0.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 shrink-0">
                             <button
                                 onClick={() => handleTabSwitch('home')}
-                                className={`px-2 md:px-2.5 lg:px-3 py-1 md:py-1.5 flex items-center justify-center gap-1.5 md:gap-2 text-xs font-medium transition-all duration-200 rounded-md relative overflow-hidden group shrink-0 ${
+                                className={`relative px-2 md:px-2.5 lg:px-3 py-1 md:py-1.5 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-colors duration-200 shrink-0 ${
                                     activeTab === 'home'
-                                        ? 'text-blue-700 dark:text-blue-300 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                                        ? 'text-blue-700 dark:text-blue-300'
+                                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
                                 }`}
                             >
-                                {/* Gradient background effect */}
                                 {activeTab === 'home' && (
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 animate-pulse" />
-                                )}
-                                <div className={`relative flex items-center justify-center w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-md transition-all duration-200 shrink-0 ${
-                                    activeTab === 'home'
-                                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-500/30'
-                                        : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-gradient-to-br group-hover:from-blue-100 group-hover:to-indigo-100 dark:group-hover:from-blue-900/30 dark:group-hover:to-indigo-900/30'
-                                }`}>
-                                    <House
-                                        size={10}
-                                        className={`md:w-[12px] md:h-[12px] lg:w-[14px] lg:h-[14px] transition-all duration-200 ${
-                                            activeTab === 'home'
-                                                ? 'text-white'
-                                                : 'text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
-                                        }`}
-                                        strokeWidth={activeTab === 'home' ? 2 : 1.5}
+                                    <motion.div
+                                        layoutId="activeTabPill"
+                                        className="absolute inset-0 rounded-lg bg-white dark:bg-gray-900 shadow-sm ring-1 ring-blue-500/10 dark:ring-blue-400/20"
+                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                     />
-                                </div>
-                                <span className="relative font-semibold hidden md:inline text-xs whitespace-nowrap">Home Chat</span>
-                                <span className="relative font-semibold md:hidden text-xs whitespace-nowrap">Home</span>
+                                )}
+                                <House
+                                    size={14}
+                                    className="relative z-10 transition-transform duration-200"
+                                    strokeWidth={activeTab === 'home' ? 2.25 : 1.75}
+                                />
+                                <span className="relative z-10 hidden md:inline whitespace-nowrap">Home Chat</span>
+                                <span className="relative z-10 md:hidden whitespace-nowrap">Home</span>
                             </button>
                             <button
                                 onClick={() => handleTabSwitch('previous')}
-                                className={`px-2 md:px-2.5 lg:px-3 py-1 md:py-1.5 flex items-center justify-center gap-1.5 md:gap-2 text-xs font-medium transition-all duration-200 rounded-md relative overflow-hidden group shrink-0 ${
+                                className={`relative px-2 md:px-2.5 lg:px-3 py-1 md:py-1.5 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-colors duration-200 shrink-0 ${
                                     activeTab === 'previous'
-                                        ? 'text-purple-700 dark:text-purple-300 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/40 dark:to-pink-950/40 shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                                        ? 'text-purple-700 dark:text-purple-300'
+                                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
                                 }`}
                             >
-                                {/* Gradient background effect */}
                                 {activeTab === 'previous' && (
-                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-rose-500/10 animate-pulse" />
-                                )}
-                                <div className={`relative flex items-center justify-center w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-md transition-all duration-200 shrink-0 ${
-                                    activeTab === 'previous'
-                                        ? 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-md shadow-purple-500/30'
-                                        : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-gradient-to-br group-hover:from-purple-100 group-hover:to-pink-100 dark:group-hover:from-purple-900/30 dark:group-hover:to-pink-900/30'
-                                }`}>
-                                    <Clock
-                                        size={10}
-                                        className={`md:w-[12px] md:h-[12px] lg:w-[14px] lg:h-[14px] transition-all duration-200 ${
-                                            activeTab === 'previous'
-                                                ? 'text-white'
-                                                : 'text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400'
-                                        }`}
-                                        strokeWidth={activeTab === 'previous' ? 2 : 1.5}
+                                    <motion.div
+                                        layoutId="activeTabPill"
+                                        className="absolute inset-0 rounded-lg bg-white dark:bg-gray-900 shadow-sm ring-1 ring-purple-500/10 dark:ring-purple-400/20"
+                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                     />
-                                </div>
-                                <span className="relative font-semibold hidden md:inline text-xs whitespace-nowrap">Previous Chat</span>
-                                <span className="relative font-semibold md:hidden text-xs whitespace-nowrap">Previous</span>
+                                )}
+                                <Clock
+                                    size={14}
+                                    className="relative z-10 transition-transform duration-200"
+                                    strokeWidth={activeTab === 'previous' ? 2.25 : 1.75}
+                                />
+                                <span className="relative z-10 hidden md:inline whitespace-nowrap">Previous Chat</span>
+                                <span className="relative z-10 md:hidden whitespace-nowrap">Previous</span>
                                 {previousMessages.length > 0 && (
-                                    <span className={`relative ml-0.5 h-3 w-3 md:h-3.5 md:w-3.5 rounded-full flex items-center justify-center text-[7px] md:text-[8px] font-bold transition-all duration-200 shrink-0 ${
-                                        activeTab === 'previous'
-                                            ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-md shadow-purple-500/40'
-                                            : 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm'
-                                    }`}>
+                                    <motion.span
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                                        className="relative z-10 ml-0.5 min-w-[14px] h-3.5 px-1 rounded-full flex items-center justify-center text-[8px] font-bold bg-gradient-to-br from-purple-500 to-pink-600 text-white shadow-sm shadow-purple-500/40"
+                                    >
                                         {previousMessages.length > 99 ? '99+' : previousMessages.length}
-                                    </span>
+                                    </motion.span>
                                 )}
                             </button>
-                            
+                            </div>
+
                             {/* Condense Chat Button - Summarizes the conversation */}
                             {messages.length >= 2 && (
                                 <motion.button
