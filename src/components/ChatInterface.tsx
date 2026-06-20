@@ -481,7 +481,6 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                 <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-white/30 to-transparent" />
                                 <Sparkles size={12} className="relative text-white" strokeWidth={2} />
                             </motion.div>
-                            <h1 className="text-xs font-bold tracking-tight whitespace-nowrap shrink-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">RAG</h1>
                         </div>
 
                         {/* Segmented tab control with animated sliding pill - Icons only on mobile */}
