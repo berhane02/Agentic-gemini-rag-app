@@ -1,6 +1,7 @@
 'use client';
 
 import { Sparkles, Zap, Shield, BookMarked } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useUserContext } from '@/contexts/UserContext';
 import { useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
@@ -129,16 +130,25 @@ export default function LandingPage() {
                             desc: 'Access all your documentation'
                         }
                     ].map((feature, idx) => (
-                        <div
+                        <motion.div
                             key={idx}
-                            className="landing-page-feature-card group p-6 sm:p-8 rounded-2xl bg-white/4 border border-white/8 backdrop-blur-sm hover:bg-white/7 hover:border-white/15 transition-all duration-300"
+                            initial={{ opacity: 0, y: 24 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.5, delay: idx * 0.12, ease: "easeOut" }}
+                            whileHover={{ y: -4 }}
+                            className="landing-page-feature-card group p-6 sm:p-8 rounded-2xl bg-white/4 border border-white/8 backdrop-blur-sm hover:bg-white/7 hover:border-white/15 transition-colors duration-300"
                         >
-                            <div className={`landing-page-feature-icon inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.glow} mb-5`}>
+                            <motion.div
+                                whileHover={{ scale: 1.1, rotate: 4 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                                className={`landing-page-feature-icon inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.glow} mb-5`}
+                            >
                                 <feature.Icon className="w-5 h-5 text-white" strokeWidth={1.75} />
-                            </div>
+                            </motion.div>
                             <h3 className="landing-page-feature-title text-lg sm:text-xl font-semibold text-white mb-2">{feature.title}</h3>
                             <p className="landing-page-feature-desc text-sm sm:text-base text-white/50 leading-relaxed">{feature.desc}</p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
