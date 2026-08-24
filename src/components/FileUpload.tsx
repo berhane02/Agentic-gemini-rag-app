@@ -293,71 +293,85 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
 
     // Compact icon-only mode for mobile navbar or navbar with text
     if (compact) {
+        const isBusy = uploading || processingStatus === 'processing' || uploadSuccess;
+        const isReady = processingStatus === 'ready';
+
         return (
             <div className="file-upload-compact relative">
-                <div
+                <motion.div
                     {...getRootProps()}
-                        className={clsx(
-                        'relative rounded-md cursor-pointer transition-all duration-200 overflow-hidden group flex items-center gap-1.5',
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={clsx(
+                        'relative rounded-lg cursor-pointer transition-colors duration-200 overflow-hidden group flex items-center gap-1.5 shadow-sm',
                         showText
                             ? 'px-2 md:px-2.5 lg:px-3 py-1 md:py-1.5'
                             : 'p-1.5',
-                        uploading || processingStatus === 'processing'
-                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                            : processingStatus === 'ready'
-                                ? 'bg-gradient-to-br from-green-500 to-emerald-600'
-                                : uploadSuccess
-                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                                    : isDragActive
-                                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 scale-105 shadow-lg shadow-blue-500/30'
-                                        : 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 hover:from-blue-200 hover:to-indigo-200 dark:hover:from-blue-800/50 dark:hover:to-indigo-800/50'
+                        isReady
+                            ? 'bg-gradient-to-br from-green-500 to-emerald-600 shadow-md shadow-green-500/30'
+                            : isBusy
+                                ? 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/30'
+                                : isDragActive
+                                    ? 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30'
+                                    : 'bg-gray-100/80 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 hover:bg-gray-200/80 dark:hover:bg-gray-700/60'
                     )}
                     title={
-                        uploading 
-                            ? 'Uploading...' 
-                            : processingStatus === 'processing' 
-                                ? 'Processing...' 
-                                : processingStatus === 'ready' 
-                                    ? 'Ready for query' 
-                                    : uploadSuccess 
-                                        ? 'Upload successful' 
+                        uploading
+                            ? 'Uploading...'
+                            : processingStatus === 'processing'
+                                ? 'Processing...'
+                                : processingStatus === 'ready'
+                                    ? 'Ready for query'
+                                    : uploadSuccess
+                                        ? 'Upload successful'
                                         : 'Upload file'
                     }
                 >
+                    {/* Glossy highlight overlay on gradient states */}
+                    {(isReady || isBusy || isDragActive) && (
+                        <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-white/30 to-transparent pointer-events-none" />
+                    )}
                     <input {...getInputProps()} className="file-upload-input" />
                     {uploading ? (
-                        <Loader2 className="h-3.5 w-3.5 md:h-4 md:w-4 text-white animate-spin" />
+                        <Loader2 className="relative h-3.5 w-3.5 md:h-4 md:w-4 text-white animate-spin" />
                     ) : processingStatus === 'ready' ? (
-                        <CircleCheckBig className="h-3.5 w-3.5 md:h-4 md:w-4 text-white" strokeWidth={1.75} />
+                        <CircleCheckBig className="relative h-3.5 w-3.5 md:h-4 md:w-4 text-white" strokeWidth={1.75} />
                     ) : processingStatus === 'processing' || uploadSuccess ? (
-                        <Loader2 className="h-3.5 w-3.5 md:h-4 md:w-4 text-white animate-spin" />
+                        <Loader2 className="relative h-3.5 w-3.5 md:h-4 md:w-4 text-white animate-spin" />
                     ) : (
-                        <Upload className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors" />
+                        <Upload className="relative h-3.5 w-3.5 md:h-4 md:w-4 text-gray-600 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
                     )}
                     {showText && (
                         <span className={clsx(
-                            "text-xs md:text-sm font-bold transition-colors whitespace-nowrap",
-                            uploading || uploadSuccess || processingStatus === 'processing' || processingStatus === 'ready' || isDragActive
+                            "relative text-xs md:text-sm font-bold transition-colors whitespace-nowrap",
+                            isBusy || isReady || isDragActive
                                 ? "text-white"
-                                : "text-gray-800 dark:text-gray-200"
+                                : "text-gray-700 dark:text-gray-300"
                         )}>
-                            {uploading 
-                                ? 'Uploading...' 
-                                : processingStatus === 'processing' 
-                                    ? 'Processing...' 
-                                    : processingStatus === 'ready' 
-                                        ? 'Ready for query' 
-                                        : uploadSuccess 
-                                            ? 'Processing...' 
+                            {uploading
+                                ? 'Uploading...'
+                                : processingStatus === 'processing'
+                                    ? 'Processing...'
+                                    : processingStatus === 'ready'
+                                        ? 'Ready for query'
+                                        : uploadSuccess
+                                            ? 'Processing...'
                                             : 'Upload Doc'}
                         </span>
                     )}
-                </div>
-                {errorMessage && (
-                    <div className="file-upload-compact-error-message absolute top-full left-0 mt-1 px-2 py-1 bg-red-50 dark:bg-red-950/30 border border-red-300 dark:border-red-800 rounded text-[10px] text-red-700 dark:text-red-300 whitespace-nowrap z-50 shadow-lg">
-                        {errorMessage}
-                    </div>
-                )}
+                </motion.div>
+                <AnimatePresence>
+                    {errorMessage && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            className="file-upload-compact-error-message absolute top-full left-0 mt-1 px-2 py-1 bg-red-50/90 dark:bg-red-950/70 backdrop-blur-sm border border-red-300 dark:border-red-800 rounded-md text-[10px] text-red-700 dark:text-red-300 whitespace-nowrap z-50 shadow-lg"
+                        >
+                            {errorMessage}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         );
     }
@@ -390,14 +404,14 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                         <div
                             {...getRootProps()}
                             className={clsx(
-                                'file-upload-dropzone relative border-2 border-dashed rounded-lg p-1 sm:p-1.5 text-center cursor-pointer transition-all duration-300 overflow-hidden group',
+                                'file-upload-dropzone relative border-2 border-dashed rounded-xl p-1 sm:p-1.5 text-center cursor-pointer transition-all duration-300 overflow-hidden group backdrop-blur-sm',
                                 isDragActive
-                                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/20 scale-105 shadow-lg shadow-blue-500/20'
-                                    : 'border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-600 bg-gradient-to-br from-blue-50/50 to-white dark:from-blue-950/10 dark:to-gray-900 hover:shadow-lg hover:shadow-blue-500/10'
+                                    ? 'border-indigo-500 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-purple-950/20 scale-105 shadow-lg shadow-indigo-500/20'
+                                    : 'border-indigo-300/70 dark:border-indigo-700/70 hover:border-indigo-400 dark:hover:border-indigo-600 bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 dark:from-blue-950/10 dark:via-gray-900 dark:to-purple-950/10 hover:shadow-lg hover:shadow-indigo-500/10'
                             )}
                         >
                             {/* Animated background gradient */}
-                            <div className="file-upload-dropzone-shimmer absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                            <div className="file-upload-dropzone-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
 
                             <input {...getInputProps()} className="file-upload-input" />
                             <motion.div
@@ -406,17 +420,17 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                                 className="file-upload-content relative z-10"
                             >
                                 <div className="file-upload-icon-wrapper relative inline-block mb-0.5">
-                                    <div className="file-upload-icon-glow absolute inset-0 bg-blue-500/20 rounded-full blur-lg" />
-                                    <Upload className="file-upload-icon relative mx-auto h-3 w-3 sm:h-4 sm:w-4 text-blue-500 dark:text-blue-400" strokeWidth={1.75} />
+                                    <div className="file-upload-icon-glow absolute inset-0 bg-indigo-500/20 rounded-full blur-lg" />
+                                    <Upload className="file-upload-icon relative mx-auto h-3 w-3 sm:h-4 sm:w-4 text-indigo-500 dark:text-indigo-400" strokeWidth={1.75} />
                                 </div>
                                 <p className="file-upload-instruction text-[8px] sm:text-[9px] font-medium text-gray-700 dark:text-gray-300 mb-0 leading-tight">
                                     {isDragActive ? (
-                                        <span className="file-upload-drag-active-text text-blue-600 dark:text-blue-400 font-semibold">Drop here...</span>
+                                        <span className="file-upload-drag-active-text text-indigo-600 dark:text-indigo-400 font-semibold">Drop here...</span>
                                     ) : (
                                         'Drag & drop or click'
                                     )}
                                 </p>
-                                <p className="file-upload-file-types text-[8px] sm:text-[9px] text-blue-500 dark:text-blue-400 font-medium">
+                                <p className="file-upload-file-types text-[8px] sm:text-[9px] text-indigo-500 dark:text-indigo-400 font-medium">
                                     TXT, MD, PDF (max 10MB)
                                 </p>
                             </motion.div>
@@ -436,7 +450,7 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className={`file-upload-success-container flex items-center justify-between bg-white dark:bg-gray-900 border rounded-lg p-2 sm:p-2.5 shadow-md ${isDuplicate
+                                className={`file-upload-success-container flex items-center justify-between bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border rounded-xl p-2 sm:p-2.5 shadow-md ${isDuplicate
                                     ? 'border-yellow-500/50 dark:border-yellow-500/30 bg-yellow-50/30 dark:bg-yellow-950/10'
                                     : 'border-green-500/50 dark:border-green-500/30 bg-green-50/30 dark:bg-green-950/10'
                                     }`}
@@ -446,12 +460,13 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         transition={{ delay: 0.1, type: "spring" }}
-                                        className={`file-upload-success-icon p-1 sm:p-1.5 rounded-lg shadow-sm ${isDuplicate
+                                        className={`file-upload-success-icon relative p-1 sm:p-1.5 rounded-lg shadow-sm overflow-hidden ${isDuplicate
                                             ? 'bg-gradient-to-br from-yellow-500 to-orange-500'
                                             : 'bg-gradient-to-br from-green-500 to-emerald-500'
                                             }`}
                                     >
-                                        <CircleCheckBig className="h-3 w-3 sm:h-4 sm:w-4 text-white" strokeWidth={1.75} />
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent" />
+                                        <CircleCheckBig className="relative h-3 w-3 sm:h-4 sm:w-4 text-white" strokeWidth={1.75} />
                                     </motion.div>
                                     <span className={`file-upload-success-text text-[10px] sm:text-xs font-medium ${isDuplicate
                                         ? 'text-yellow-600 dark:text-yellow-400'
@@ -482,18 +497,18 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                         ) : (
                             // Upload state: Show upload button
                             <div className={clsx(
-                                "file-upload-pending-container bg-white dark:bg-gray-900 border rounded-lg p-2 sm:p-2.5 shadow-lg transition-all duration-300",
-                                processingStatus === 'processing' ? "border-blue-500 dark:border-blue-600" : "border-blue-200 dark:border-blue-800"
+                                "file-upload-pending-container bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border rounded-xl p-2 sm:p-2.5 shadow-lg transition-all duration-300",
+                                processingStatus === 'processing' ? "border-indigo-500 dark:border-indigo-600" : "border-indigo-200/70 dark:border-indigo-800/70"
                             )}>
                                 {/* Show processing status if file is being processed */}
                                 {(processingStatus === 'processing' || (uploadSuccess && processingStatus !== 'ready')) && (
                                     <motion.div
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="file-processing-status mb-2 p-2 bg-blue-50 dark:bg-blue-950/30 border border-blue-300 dark:border-blue-700 rounded-lg flex items-center gap-2"
+                                        className="file-processing-status mb-2 p-2 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-300 dark:border-indigo-700 rounded-lg flex items-center gap-2"
                                     >
-                                        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400 animate-spin" />
-                                        <span className="text-xs text-blue-700 dark:text-blue-300 font-medium">Processing document...</span>
+                                        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 text-indigo-600 dark:text-indigo-400 animate-spin" />
+                                        <span className="text-xs text-indigo-700 dark:text-indigo-300 font-medium">Processing document...</span>
                                     </motion.div>
                                 )}
                                 <div className="file-upload-pending-header flex items-center justify-between mb-2">
@@ -502,9 +517,10 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
                                             transition={{ delay: 0.1, type: "spring" }}
-                                            className="file-upload-pending-icon p-1.5 sm:p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-md shadow-blue-500/30"
+                                            className="file-upload-pending-icon relative p-1.5 sm:p-2 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-lg shadow-md shadow-indigo-500/30 overflow-hidden"
                                         >
-                                            <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-white" strokeWidth={1.75} />
+                                            <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent" />
+                                            <FileText className="relative h-3 w-3 sm:h-4 sm:w-4 text-white" strokeWidth={1.75} />
                                         </motion.div>
                                         <div className="file-upload-pending-details min-w-0 flex-1">
                                             <p className="file-upload-pending-file-name text-[10px] sm:text-xs font-semibold text-gray-900 dark:text-white truncate">
@@ -531,7 +547,7 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                                     animate={{ opacity: 1 }}
                                     onClick={handleUpload}
                                     disabled={uploading}
-                                    className="file-upload-submit-button w-full relative overflow-hidden group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white py-2 px-3 rounded-lg hover:from-blue-500 hover:via-blue-400 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-xs font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]"
+                                    className="file-upload-submit-button w-full relative overflow-hidden group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 text-white py-2 px-3 rounded-lg hover:from-blue-500 hover:via-indigo-400 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-xs font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     <div className="file-upload-submit-button-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                                     {uploading ? (
