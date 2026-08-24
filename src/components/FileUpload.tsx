@@ -298,12 +298,10 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
 
         return (
             <div className="file-upload-compact relative">
-                <motion.div
+                <div
                     {...getRootProps()}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                     className={clsx(
-                        'relative rounded-lg cursor-pointer transition-colors duration-200 overflow-hidden group flex items-center gap-1.5 shadow-sm',
+                        'relative rounded-lg cursor-pointer transition-all duration-200 overflow-hidden group flex items-center gap-1.5 shadow-sm hover:scale-105 active:scale-95',
                         showText
                             ? 'px-2 md:px-2.5 lg:px-3 py-1 md:py-1.5'
                             : 'p-1.5',
@@ -359,7 +357,7 @@ export default function FileUpload({ compact = false, showText = false }: FileUp
                                             : 'Upload Doc'}
                         </span>
                     )}
-                </motion.div>
+                </div>
                 <AnimatePresence>
                     {errorMessage && (
                         <motion.div
