@@ -18,10 +18,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RAG Agent - AI-Powered Document Q&A",
+  title: "Agentic RAG - AI-Powered Document Q&A",
   description: "Ask questions about your uploaded documents using AI-powered RAG technology",
   keywords: ["RAG", "agent", "AI", "document analysis", "Q&A"],
-  authors: [{ name: "RAG Agent Team" }],
+  authors: [{ name: "Agentic RAG Team" }],
   robots: {
     index: true,
     follow: true,

@@ -593,7 +593,7 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                                 <Sparkles size={14} className="relative text-white md:w-4 md:h-4" strokeWidth={2} />
                             </motion.div>
                             <h1 className="chat-header-title text-sm md:text-base font-bold tracking-tight whitespace-nowrap shrink-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                                RAG Agent
+                                Agentic RAG
                             </h1>
                         </div>
 
