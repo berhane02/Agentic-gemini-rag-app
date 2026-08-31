@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import FileUpload from './FileUpload';
+import UrlUpload from './UrlUpload';
 import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
 import AuthButton from './AuthButton';
@@ -565,10 +566,13 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                         </div>
                     </div>
                     
-                    {/* File Upload - Centered on mobile with proper spacing */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center z-10 pointer-events-none">
+                    {/* File Upload / Website Upload - Centered on mobile with proper spacing */}
+                    <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1.5 z-10 pointer-events-none">
                         <div className="pointer-events-auto">
                             <FileUpload compact={true} showText={false} />
+                        </div>
+                        <div className="pointer-events-auto">
+                            <UrlUpload showText={false} />
                         </div>
                     </div>
                     
@@ -729,8 +733,8 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                         </div>
                     </div>
                     
-                    {/* File Upload - Centered in navbar with proper spacing to prevent overlap */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center z-10 pointer-events-none">
+                    {/* File Upload / Website Upload - Centered in navbar with proper spacing to prevent overlap */}
+                    <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1.5 md:gap-2 z-10 pointer-events-none">
                         <div className="pointer-events-auto">
                             {/* Show text on larger screens, icon-only on smaller screens */}
                             <div className="hidden lg:block">
@@ -738,6 +742,14 @@ function ChatInterfaceComponent({ user }: ChatInterfaceProps) {
                             </div>
                             <div className="block lg:hidden">
                                 <FileUpload compact={true} showText={false} />
+                            </div>
+                        </div>
+                        <div className="pointer-events-auto">
+                            <div className="hidden lg:block">
+                                <UrlUpload showText={true} />
+                            </div>
+                            <div className="block lg:hidden">
+                                <UrlUpload showText={false} />
                             </div>
                         </div>
                     </div>

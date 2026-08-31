@@ -95,6 +95,24 @@ export function validateFile(file: File): ValidationResult {
   return { valid: true };
 }
 
+export function filenameFromUrl(url: string, title: string): string {
+  let host = 'webpage';
+  try {
+    host = new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    // fall back to default host label
+  }
+
+  const titlePart = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60);
+
+  const base = titlePart ? `${host}-${titlePart}` : host;
+  return sanitizeFilename(`${base}.txt`.slice(-MAX_FILENAME_LENGTH));
+}
+
 export function sanitizeFilename(filename: string): string {
   // Remove path separators and other potentially dangerous characters
   return filename
